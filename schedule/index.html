@@ -1,41 +1,37 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>캘린더 | 시루냥 팬사이트</title>
-    <link rel="stylesheet" href="../style.css">
-</head>
-<body>
-<header class="site-header">
-    <div class="header-inner">
-        <a class="logo" href="../">시루냥 <span>팬사이트</span></a>
-        <nav class="nav">
-            <a href="../">메인</a>
-            <a href="../post/">게시글</a>
-            <a href="../schedule/">캘린더</a>
-            <a href="../tetris/">테트리스</a>
-        </nav>
-    </div>
-</header>
-
-<main>
-    <section class="page-title">
-        <h1>캘린더</h1>
-        <p>시루냥 방송 및 주요 일정을 확인하는 공간</p>
-    </section>
-
-    <section class="placeholder-grid">
-        
-    <article class="card">
-        <h2>달력 영역</h2>
-        <p>나중에 월별 캘린더 연동 예정.</p>
-    </article>
-    
-    </section>
-</main>
-
+<!doctype html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>캘린더 | 시루냥 팬사이트</title><link rel="stylesheet" href="../style.css"></head><body>
+<header class="site-header"><div class="header-inner"><a class="logo" href="../">시루냥 <span>팬사이트</span></a><nav class="nav"><a href="../">메인</a><a href="../post/">포스트</a><a href="./">캘린더</a><a href="../tetris/">테트리스</a></nav></div></header>
+<main><div class="schedule-wrap"><div class="schedule-toolbar"><button class="month-btn" id="prev">‹</button><h1 id="title">2026년 8월</h1><button class="month-btn" id="next">›</button></div>
+<div class="calendar-scroll"><div class="calendar"><div class="weekdays"><div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div></div><div id="body"></div></div></div>
+<div class="calendar-note">일단 8월만</div></div></main>
 <footer class="footer">시루냥 팬사이트 · 준비중</footer>
-<script src="../script.js"></script>
-</body>
-</html>
+<script>
+const data={
+1:[["휴방","off"]],
+2:[["두둥투어\n세피리아\n마크",""]],
+3:[["21:00 뱅온","time"],["별별&리캡\n마크",""]],
+4:[["롤",""]],
+5:[["소통\n후열 롤",""]],
+6:[["세피리아 → 완\n(w. 킴아연, 코에, 쏭아야)\n두둥두어 - 완",""]],
+7:[["휴방","off"]],
+8:[["16:30 뱅온","time"],["18시 버종대 크아 w.바냐\n- 20만원 컷\n후열 증칼 w.바냐",""]],
+9:[["21:00 뱅온","time"],["소통\n후열 롤",""]],
+10:[["21:00 뱅온","time"],["작업방\n후열 롤",""]],
+11:[["휴방","off"]],
+12:[["20:00 뱅온","time"],["21시 고상 합방 w.쏭이\n고상 작업 콘텐츠",""]],
+13:[["1부 08:00 / 2부 21:00","time"],["08시 배그 w.철쑤\n후열 소통\n21시 소통\n고상 테트리스",""]],
+14:[["18:00 뱅온","time"],["19시 또로리야 롤 알빙고",""]],
+15:[["휴방","off"]],
+16:[["21:00 뱅온","time"],["소통\n노래\n00시 롤",""]],
+17:[["휴방","off"]],
+18:[["17:00 뱅온","time"],["18시 다이아세끼\nw. 철쑤, 세리즈\n근데 노방종",""]],
+19:[["노방종 ing","green"],["12시 수면\n16시 복귀\n5~6시간 노수면",""]],
+20:[["노방종 ing","green"],["12시 취침\n14시 천나 경도 발표 - 합격\n17시 복귀\n18:44 - GG\n21시 뱅종",""]],
+21:[["휴방","off"]],22:[["휴방","off"]],
+23:[["21:00 뱅온","time"],["소통\n세피리아 w.바냐",""]],
+24:[["?시 뱅온","time"],["19시 버빵동 팰월드"],["21시 챈나 경도",""]]
+};
+function render(y,m){title.textContent=`${y}년 ${m+1}월`;body.innerHTML="";let first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate(),d=1;
+for(let r=0;r<6&&d<=days;r++){let w=document.createElement("div");w.className="week";for(let c=0;c<7;c++){let cell=document.createElement("div");cell.className="day";let i=r*7+c;if(i<first||d>days){w.appendChild(cell);continue}if(c===0)cell.classList.add("sunday");if(c===6)cell.classList.add("saturday");let n=document.createElement("div");n.className="day-num";n.textContent=d;cell.appendChild(n);(data[d]||[]).forEach(e=>{let x=document.createElement("div");x.className="event "+e[1];x.textContent=e[0];cell.appendChild(x)});w.appendChild(cell);d++}body.appendChild(w)}}
+let cur=new Date(2026,7,1);render(cur.getFullYear(),cur.getMonth());
+prev.onclick=()=>{cur.setMonth(cur.getMonth()-1);render(cur.getFullYear(),cur.getMonth())};next.onclick=()=>{cur.setMonth(cur.getMonth()+1);render(cur.getFullYear(),cur.getMonth())};
+</script></body></html>

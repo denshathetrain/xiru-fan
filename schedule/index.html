@@ -5,33 +5,122 @@
 <div class="calendar-note">일단 8월만</div></div></main>
 <footer class="footer">시루냥 팬사이트 · 준비중</footer>
 <script>
-const data={
-1:[["휴방","off"]],
-2:[["두둥투어\n세피리아\n마크",""]],
-3:[["21:00 뱅온","time"],["별별&리캡\n마크",""]],
-4:[["롤",""]],
-5:[["소통\n후열 롤",""]],
-6:[["세피리아 → 완\n(w. 킴아연, 코에, 쏭아야)\n두둥두어 - 완",""]],
-7:[["휴방","off"]],
-8:[["16:30 뱅온","time"],["18시 버종대 크아 w.바냐\n- 20만원 컷\n후열 증칼 w.바냐",""]],
-9:[["21:00 뱅온","time"],["소통\n후열 롤",""]],
-10:[["21:00 뱅온","time"],["작업방\n후열 롤",""]],
-11:[["휴방","off"]],
-12:[["20:00 뱅온","time"],["21시 고상 합방 w.쏭이\n고상 작업 콘텐츠",""]],
-13:[["1부 08:00 / 2부 21:00","time"],["08시 배그 w.철쑤\n후열 소통\n21시 소통\n고상 테트리스",""]],
-14:[["18:00 뱅온","time"],["19시 또로리야 롤 알빙고",""]],
-15:[["휴방","off"]],
-16:[["21:00 뱅온","time"],["소통\n노래\n00시 롤",""]],
-17:[["휴방","off"]],
-18:[["17:00 뱅온","time"],["18시 다이아세끼\nw. 철쑤, 세리즈\n근데 노방종",""]],
-19:[["노방종 ing","green"],["12시 수면\n16시 복귀\n5~6시간 노수면",""]],
-20:[["노방종 ing","green"],["12시 취침\n14시 천나 경도 발표 - 합격\n17시 복귀\n18:44 - GG\n21시 뱅종",""]],
-21:[["휴방","off"]],22:[["휴방","off"]],
-23:[["21:00 뱅온","time"],["소통\n세피리아 w.바냐",""]],
-24:[["?시 뱅온","time"],["19시 버빵동 팰월드"],["21시 챈나 경도",""]]
+const API_URL = "https://script.google.com/macros/s/AKfycbyQFVjE0ZhUW4w59tiPUYssaFJ8R92iKpEYtYVZbp6bp61x7hrW13XGLh0ZOOED1v9s/exec";
+
+let data = {};
+
+function loadSchedule() {
+    const callbackName = "scheduleCallback";
+
+    window[callbackName] = function(schedules) {
+        console.log("받은 일정:", schedules);
+
+        data = {};
+
+        schedules.forEach(item => {
+            const date = new Date(item.date);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const day = String(date.getDate()).padStart(2, "0");
+            const key = `${year}-${month}-${day}`;
+            if (!data[key]) {
+                data[key] = [];
+            }
+
+            data[key].push([
+                item.content,
+                item.color
+            ]);
+        });
+
+        render(cur.getFullYear(), cur.getMonth());
+    };
+
+    const script = document.createElement("script");
+
+    script.src =
+        API_URL +
+        "?callback=" +
+        callbackName +
+        "&t=" +
+        Date.now();
+
+    script.onerror = function() {
+        console.error("일정 데이터를 불러오지 못했습니다.");
+    };
+
+    document.body.appendChild(script);
+}
+
+function render(y, m) {
+    title.textContent = `${y}년 ${m + 1}월`;
+    body.innerHTML = "";
+
+    const first = new Date(y, m, 1).getDay();
+    const days = new Date(y, m + 1, 0).getDate();
+
+    let d = 1;
+
+    for (let r = 0; r < 6 && d <= days; r++) {
+        const w = document.createElement("div");
+        w.className = "week";
+
+        for (let c = 0; c < 7; c++) {
+            const cell = document.createElement("div");
+            cell.className = "day";
+
+            const i = r * 7 + c;
+
+            if (i < first || d > days) {
+                w.appendChild(cell);
+                continue;
+            }
+
+            if (c === 0) cell.classList.add("sunday");
+            if (c === 6) cell.classList.add("saturday");
+
+            const n = document.createElement("div");
+            n.className = "day-num";
+            n.textContent = d;
+
+            cell.appendChild(n);
+
+            const month = String(m + 1).padStart(2, "0");
+            const day = String(d).padStart(2, "0");
+
+            const key = `${y}-${month}-${day}`;
+
+            (data[key] || []).forEach(e => {
+                const x = document.createElement("div");
+
+                x.className = `event ${e[1]}`;
+                x.textContent = e[0];
+
+                cell.appendChild(x);
+            });
+
+            w.appendChild(cell);
+            d++;
+        }
+
+        body.appendChild(w);
+    }
+}
+
+let cur = new Date(2026, 7, 1);
+
+prev.onclick = () => {
+    cur.setMonth(cur.getMonth() - 1);
+    render(cur.getFullYear(), cur.getMonth());
 };
-function render(y,m){title.textContent=`${y}년 ${m+1}월`;body.innerHTML="";let first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate(),d=1;
-for(let r=0;r<6&&d<=days;r++){let w=document.createElement("div");w.className="week";for(let c=0;c<7;c++){let cell=document.createElement("div");cell.className="day";let i=r*7+c;if(i<first||d>days){w.appendChild(cell);continue}if(c===0)cell.classList.add("sunday");if(c===6)cell.classList.add("saturday");let n=document.createElement("div");n.className="day-num";n.textContent=d;cell.appendChild(n);(data[d]||[]).forEach(e=>{let x=document.createElement("div");x.className="event "+e[1];x.textContent=e[0];cell.appendChild(x)});w.appendChild(cell);d++}body.appendChild(w)}}
-let cur=new Date(2026,7,1);render(cur.getFullYear(),cur.getMonth());
-prev.onclick=()=>{cur.setMonth(cur.getMonth()-1);render(cur.getFullYear(),cur.getMonth())};next.onclick=()=>{cur.setMonth(cur.getMonth()+1);render(cur.getFullYear(),cur.getMonth())};
-</script></body></html>
+
+next.onclick = () => {
+    cur.setMonth(cur.getMonth() + 1);
+    render(cur.getFullYear(), cur.getMonth());
+};
+
+render(cur.getFullYear(), cur.getMonth());
+loadSchedule();
+</script>
+</body>
+</html>

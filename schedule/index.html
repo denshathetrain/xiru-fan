@@ -1,8 +1,14 @@
-<!doctype html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>캘린더 | 시루냥 팬사이트</title><link rel="stylesheet" href="../style.css"></head><body>
+<!doctype html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>캘린더 | 시루냥 팬사이트</title><link rel="stylesheet" href="../style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Paperlogy:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head><body>
 <header class="site-header"><div class="header-inner"><a class="logo" href="../">시루냥 <span>팬사이트</span></a><nav class="nav"><a href="../">메인</a><a href="../post/">포스트</a><a href="./">캘린더</a><a href="../tetris/">테트리스</a></nav></div></header>
+
 <main><div class="schedule-wrap"><div class="schedule-toolbar"><button class="month-btn" id="prev">‹</button><h1 id="title">2026년 8월</h1><button class="month-btn" id="next">›</button></div>
 <div class="calendar-scroll"><div class="calendar"><div class="weekdays"><div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div></div><div id="body"></div></div></div>
-<div class="calendar-note">일단 8월만</div></div></main>
+</div></main>
 <footer class="footer">시루냥 팬사이트 · 준비중</footer>
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbyQFVjE0ZhUW4w59tiPUYssaFJ8R92iKpEYtYVZbp6bp61x7hrW13XGLh0ZOOED1v9s/exec";
@@ -91,12 +97,15 @@ function render(y, m) {
             const key = `${y}-${month}-${day}`;
 
             (data[key] || []).forEach(e => {
-                const x = document.createElement("div");
-
-                x.className = `event ${e[1]}`;
-                x.textContent = e[0];
-
-                cell.appendChild(x);
+                const contents = e[0].split("/");
+                contents.forEach(content => {
+                    const text = content.trim();
+                    if (!text) return;
+                    const x = document.createElement("div");
+                    x.className = `event ${e[1]}`;
+                    x.textContent = text;
+                    cell.appendChild(x);
+                });
             });
 
             w.appendChild(cell);

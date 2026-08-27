@@ -98,11 +98,13 @@ function render(y, m) {
 
             (data[key] || []).forEach(e => {
                 const contents = e[0].split("/");
-                contents.forEach(content => {
+                const colors = e[1].split("/");
+                contents.forEach((content, index) => {
                     const text = content.trim();
                     if (!text) return;
+                    const color = (colors[index] || colors[0] || "pink").trim();
                     const x = document.createElement("div");
-                    x.className = `event ${e[1]}`;
+                    x.className = `event ${color}`;
                     x.textContent = text;
                     cell.appendChild(x);
                 });

@@ -21,22 +21,43 @@
     </div>
 </header>
 
-<main>
-    <section class="hero">
-        <div class="eyebrow">(사진 들어갈 자리)</div>
-    
-        <p>캘린더 연동됨</p>
-        <p>업보목록, 노래책 추가 예정</p>
+<main class="home-main">
+    <section class="hero home-hero">
+        <div class="hero-glow"></div>
+        <div class="hero-profile">
+            <div class="profile-image"><span>시루냥</span></div>
+        </div>
+        <div class="hero-copy">
+            <div class="eyebrow">XIRUNYANG FAN SITE</div>
+            <h1>시루냥</h1>
+            <p>비공식 팬사이트</p>
+            <div class="hero-links">
+                <a href="/schedule/">일정</a>
+                <a href="/upbo/">업보</a>
+                <a href="/song/">노래책</a>
+            </div>
+        </div>
     </section>
 
-    <section class="placeholder-grid" style="margin-top:18px;">
-        <article class="card">
-            <h2>방송</h2>
-            <p>썸네일&하이퍼링크</p>
+    <section class="home-grid">
+        <article class="home-card live-card">
+            <div class="home-card-head">
+                <div><span class="card-label">LIVE</span><h2>방송</h2></div>
+                <span class="live-dot"></span>
+            </div>
+            <div class="live-preview"><div class="live-placeholder">방송 썸네일</div></div>
+            <p>클릭 시 이동 가능</p>
         </article>
-        <article class="card">
-            <h2>공지</h2>
-            <p>방송 공지</p>
+
+        <article class="home-card notice-card">
+            <div class="home-card-head">
+                <div><span class="card-label">NOTICE</span><h2>공지</h2></div>
+                <a href="/post" class="card-arrow">→</a>
+            </div>
+            <div class="notice-list">
+                <div class="notice-item"><span>NOTICE</span><b>공지</b></div>
+                <div class="notice-item"><span>CALENDAR</span><b>오컨뭐</b></div>
+            </div>
         </article>
     </section>
 </main>

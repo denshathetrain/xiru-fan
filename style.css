@@ -76,11 +76,22 @@ a {
     gap: 6px;
 }
 
-.nav a {
+.nav a,
+.more-button {
     padding: 10px 15px;
     border-radius: 14px;
     color: var(--muted);
     transition: 0.18s ease;
+    cursor: pointer;
+    border:0;
+    font-size: 15px;
+}
+
+.nav a:hover,
+.nav a.active,
+.more-button:hover {
+    background: var(--pink);
+    color: #e77f98;
 }
 
 .nav a:hover,
@@ -90,6 +101,36 @@ a {
     box-shadow: 0 0 18px rgba(255, 105, 160, 0.12),
                 inset 0 0 12px rgba(255, 105, 160, 0.04);
 }
+
+.more-menu {
+    position: relative;
+}
+
+.more-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(8px);
+    display: none;
+    flex-direction: column;
+    min-width: 160px;
+}
+
+.more-dropdown a {
+    padding: 10px 14px; 
+    color: var(--muted);
+    font-size: 14px;
+    transition: 0.18s ease;
+}
+
+.more-menu:hover .more-dropdown {
+    display: block;
+}
+
 
 main {
     width: min(1100px, calc(100% - 32px));
@@ -323,10 +364,29 @@ main {
     color: #ffabb6;
 }
 
-.event.pink {
-    background: rgba(255, 105, 170, 0.16);
-    border-left: 3px solid #ff75b0;
-    color: #ffa1cb;
+
+.event.mint {
+    background: rgba(75, 255, 210, 0.16);
+    border-left: 3px solid #5cffd9;
+    color: #a1fff0;
+}
+
+.event.orange {
+    background: rgba(255, 145, 80, 0.16);
+    border-left: 3px solid #ff9b5c;
+    color: #ffc19a;
+}
+
+.event.purple {
+    background: rgba(145, 80, 255, 0.16);
+    border-left: 3px solid #9b5cff;
+    color: #c19aff;
+}
+
+.event.yellow {
+    background: rgba(255, 205, 75, 0.16);
+    border-left: 3px solid #ffd45c;
+    color: #ffe49a;
 }
 
 .calendar-note{margin-top:13px;color:var(--muted);font-size:17px;text-align:right}

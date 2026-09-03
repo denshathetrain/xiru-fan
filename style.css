@@ -328,12 +328,12 @@ main {
     }
 }
 
-.schedule-wrap{min-width:700px;background:rgba(14,11,17,.90);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);backdrop-filter:blur(8px);padding:13px;overflow:hidden}
+.schedule-wrap{min-width:1000px;background:rgba(14,11,17,.90);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);backdrop-filter:blur(8px);padding:13px;overflow:hidden}
 .schedule-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
 .schedule-toolbar h1{margin:0;font-size:32px}
 .month-btn{border:1px solid rgba(255,143,179,.28);background:rgba(255,105,160,.08);color:#ff9abd;box-shadow:0 0 16px rgba(255,105,160,.08);border-radius:12px;padding:8px 13px;font-family:inherit;font-size:20px;cursor:pointer}
 .calendar-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.calendar{min-width:700px;border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.calendar{min-width:1000px;border:1px solid var(--border);border-radius:14px;overflow:hidden}
 .weekdays,.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
 .weekdays>div{background:rgba(255,105,160,.08);color:#ff9abd;text-align:center;font-size:15px;padding:10px 4px;border-right:1px solid var(--border)}
 .weekdays>div:last-child{border-right:0}
@@ -393,6 +393,32 @@ main {
 @media(max-width:700px){.header-inner{min-height:auto;padding:12px 0;flex-direction:column;gap:8px}.nav{width:100%;justify-content:center}.nav a{padding:8px 10px;font-size:14px}main{padding-top:24px}
 .schedule-wrap{padding:10px;border-radius:18px}
 .schedule-toolbar h1{font-size:25px}}
+
+@media (max-width: 700px) {
+    .schedule-wrap {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0 !important;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    .calendar-scroll {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        overflow-x: auto;
+        overflow-y: hidden;
+        box-sizing: border-box;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .calendar {
+        width: 700px;
+        min-width: 700px;
+        max-width: none;
+    }
+}
 
 .calendar {
     font-family: "Paperlogy", sans-serif;

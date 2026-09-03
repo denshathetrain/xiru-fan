@@ -414,8 +414,8 @@ main {
     }
 
     .calendar {
-        width: 700px;
-        min-width: 700px;
+        width: 850px;
+        min-width: 850px;
         max-width: none;
     }
 }

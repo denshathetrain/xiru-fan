@@ -14,13 +14,10 @@
             <a href="/">메인</a>
             <a href="/post/">게시판</a>
             <a href="/schedule/">캘린더</a>
-
-    
-            <a href="/tetris/">테트리스</a>
-            <a href="/upbo/">업보목록</a>
-            <a href="/song/">노래책</a>
             
-        
+            <a href="/upbo/">업보목록</a>
+            <a href="/tetris/">테트리스</a>
+            <a href="/song/">노래책</a>
         </nav>
     </div>
 </header>
@@ -31,7 +28,6 @@
         <div class="hero-profile">
             <div class="profile-image">
                 <img src="https://stimg.sooplive.com/LOGO/xi/xirus2/m/xirus2.webp" alt="시루냥">
-                
             </div>
         </div>
         <div class="hero-copy">
@@ -47,8 +43,11 @@
                 <div><span class="card-label">LIVE</span><h2>방송</h2></div>
                 <span class="live-dot"></span>
             </div>
-            <div class="live-preview"><div class="live-placeholder">방송 썸네일</div></div>
-            <p>클릭 시 이동 가능</p>
+            <div class="live-preview" id="live-preview">
+                <div class="live-placeholder">방송 상태를 확인하는 중...</div>
+            </div>
+            <p id="live-status-text">확인 중...</p>
+
         </article>
 
         <article class="home-card notice-card">
@@ -58,8 +57,7 @@
             </div>
             <div class="notice-list">
                 <div class="notice-item"><span>NOTICE</span><b>공지</b></div>
-                <div class="notice-item"><span>CALENDAR</span><b id="home-calendar-preview">일정을 불러오는 중...</b></div>
-            </div>
+
         </article>
     </section>
 </main>

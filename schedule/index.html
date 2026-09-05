@@ -11,8 +11,9 @@
             <a href="../">메인</a>
             <a href="../post/">게시판</a>
             <a href="../schedule/">캘린더</a>
-            <a href="../tetris/">테트리스</a>
+            
             <a href="../upbo/">업보목록</a>
+            <a href="../tetris/">테트리스</a>
             <a href="../song/">노래책</a>
         </nav>
     </div>
@@ -53,23 +54,35 @@ const API_URL = "https://script.google.com/macros/s/AKfycbyQFVjE0ZhUW4w59tiPUYss
 
 let data = {};
 
-function loadSchedule() {
-    const callbackName = "scheduleCallback";
+async function loadSchedule() {
+    try {
+        const res = await fetch(
+            API_URL + "?t=" + Date.now()
+        );
 
-    window[callbackName] = function(schedules) {
+        if (!res.ok) {
+            throw new Error("HTTP " + res.status);
+        }
+
+        const schedules = await res.json();
+
         console.log("받은 일정:", schedules);
 
         data = {};
 
         schedules.forEach(item => {
             const date = new Date(item.date);
+
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, "0");
             const day = String(date.getDate()).padStart(2, "0");
+
             const key = `${year}-${month}-${day}`;
+
             if (!data[key]) {
                 data[key] = [];
             }
+
             data[key].push([
                 item.content,
                 item.color
@@ -77,22 +90,10 @@ function loadSchedule() {
         });
 
         render(cur.getFullYear(), cur.getMonth());
-    };
 
-    const script = document.createElement("script");
-
-    script.src =
-        API_URL +
-        "?callback=" +
-        callbackName +
-        "&t=" +
-        Date.now();
-
-    script.onerror = function() {
-        console.error("일정 데이터를 불러오지 못했습니다.");
-    };
-
-    document.body.appendChild(script);
+    } catch (err) {
+        console.error("일정 데이터를 불러오지 못했습니다:", err);
+    }
 }
 
 function render(y, m) {

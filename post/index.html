@@ -14,33 +14,30 @@
             <a href="../">메인</a>
             <a href="../post/">게시판</a>
             <a href="../schedule/">캘린더</a>
-            <a href="../tetris/">테트리스</a>
+            
             <a href="../upbo/">업보목록</a>
+            <a href="../tetris/">테트리스</a>
             <a href="../song/">노래책</a>
         </nav>
     </div>
 </header>
-
 <main>
     <section class="page-title">
         <h1>게시판</h1>
-        <p>시루냥 관련 게시글을 모아보는 공간</p>
     </section>
-
-    <section class="placeholder-grid">
-        
-    <article class="card">
-        <h2>공지 영역</h2>
-        <p>나중에 게시글 목록 표시</p>
-    </article>
-    <article class="card">
-        <h2>분류 영역</h2>
-        <p>업 같은거</p>
-    </article>
-    
+    <section class="board-section">
+        <div class="board-head">
+            <div>
+                <h2>게시글</h2>
+            </div>
+        </div>
+        <div id="board-list" class="board-list">
+            <div class="board-loading">
+                게시글을 불러오는 중...
+            </div>
+        </div>
     </section>
 </main>
-
 <footer class="footer">시루냥 팬사이트 · 준비중</footer>
 <script src="../script.js"></script>
 </body>

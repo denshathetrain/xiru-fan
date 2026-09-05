@@ -226,10 +226,6 @@ main {
 }
 
 
-/* =========================
-   DARK NEON POLISH
-   ========================= */
-
 .nav a:hover,
 .nav a.active {
     text-shadow: 0 0 10px rgba(255, 120, 170, 0.45);
@@ -429,7 +425,6 @@ main {
     color: #ed6f84;
 }
 
-/* 업보목록 */
 .upbo-card {
     overflow: hidden;
 }
@@ -496,9 +491,6 @@ main {
 }
 
 
-/* =========================
-   HOME - CHUNBONG STYLE
-   ========================= */
 .home-main{width:min(1180px,calc(100% - 32px))}
 .home-hero{
  min-height:500px;position:relative;display:flex;flex-direction:row;
@@ -557,4 +549,163 @@ main {
     height: 100%;
     object-fit: cover;
     display: block;
+}
+
+
+.board-section {
+    width: 100%;
+    max-width: 1100px;
+    margin: 40px auto 80px;
+    padding: 0 20px;
+}
+
+.board-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 22px;
+}
+
+.board-header h1 {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+.board-header p {
+    margin: 7px 0 0;
+    color: #999;
+    font-size: 14px;
+}
+
+.board-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.board-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 20px 24px;
+    min-height: 120px;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 174, 174, 0.12);
+    border-radius: 14px;
+    text-decoration: none;
+    color: inherit;
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.board-item:hover {
+    background: rgba(255, 174, 174, 0.06);
+    border-color: rgba(255, 174, 174, 0.35);
+    transform: translateY(-2px);
+}
+
+.board-item-title {
+    margin: 0 0 8px;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.board-item-preview {
+    margin: 0;
+    color: #999;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.board-item-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    min-width: 90px;
+}
+
+.board-item-date {
+    color: #777;
+    font-size: 12px;
+}
+
+.board-empty {
+    padding: 70px 20px;
+    text-align: center;
+    color: #777;
+    font-size: 14px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+}
+
+.board-loading {
+    padding: 70px 20px;
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+}
+
+@media (max-width: 700px) {
+    .board-section {
+        margin-top: 25px;
+        padding: 0 14px;
+    }
+    .board-header {
+        margin-bottom: 16px;
+    }
+    .board-header h1 {
+        font-size: 26px;
+    }
+    .board-header p {
+        font-size: 12px;
+    }
+    .board-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+    .board-item {
+        gap: 10px;
+        padding: 15px;
+        min-height: 110px;
+        border-radius: 12px;
+    }
+    .board-item-title {
+        font-size: 16px;
+        margin-bottom: 6px;
+    }
+    .board-item-preview {
+        font-size: 13px;
+    }
+    .board-item-info {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        min-width: 0;
+    }
+    .board-item-author {
+        font-size: 12px;
+    }
+    .board-item-date {
+        font-size: 11px;
+    }
 }

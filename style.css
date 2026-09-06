@@ -300,9 +300,13 @@ main {
         gap: 8px;
     }
 
+   
+
     .nav {
-        width: 100%;
-        justify-content: center;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 18px;
     }
 
     .nav a {
@@ -708,4 +712,120 @@ main {
     .board-item-date {
         font-size: 11px;
     }
+}
+
+/* =========================
+   더보기 메뉴
+========================= */
+
+.nav-more {
+  position: relative;
+}
+
+/* PC에서는 더보기 버튼 숨김 */
+.nav-more-btn {
+  display: none;
+}
+
+/* PC: 테트리스 / 노래책을 일반 메뉴처럼 표시 */
+.nav-more-menu {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  position: static;
+  padding: 0;
+  min-width: 0;
+
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.nav-more-menu a {
+  display: block;
+  padding: 10px 15px;
+  border-radius: 14px;
+
+  color: var(--muted);
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.nav-more-menu a:hover {
+  background: rgba(255, 105, 160, .10);
+  color: #ff9abd;
+  box-shadow:
+    0 0 18px rgba(255, 105, 160, .12),
+    inset 0 0 12px rgba(255, 105, 160, .04);
+}
+
+
+/* =========================
+   모바일
+========================= */
+
+@media (max-width: 700px) {
+
+  .nav {
+    width: 100%;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  /* 더보기 버튼 표시 */
+  .nav-more-btn {
+    display: block;
+
+    padding: 8px 10px;
+    border-radius: 14px;
+
+    background: transparent;
+    color: var(--muted);
+    border: 0;
+
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .nav-more-btn:hover {
+    background: rgba(255, 105, 160, .10);
+    color: #ff9abd;
+  }
+
+  /* 모바일에서는 드롭다운 */
+  .nav-more-menu {
+    display: none;
+
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+
+    min-width: 120px;
+    padding: 6px;
+
+    flex-direction: column;
+    gap: 2px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+
+    z-index: 1000;
+  }
+
+  .nav-more-menu.show {
+    display: flex;
+  }
+
+  .nav-more-menu a {
+    padding: 9px 12px;
+    border-radius: 10px;
+    font-size: 14px;
+  }
 }

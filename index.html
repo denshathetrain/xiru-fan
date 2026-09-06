@@ -14,10 +14,16 @@
             <a href="/">메인</a>
             <a href="/post/">게시판</a>
             <a href="/schedule/">캘린더</a>
-            
             <a href="/upbo/">업보목록</a>
-            <a href="/tetris/">테트리스</a>
-            <a href="/song/">노래책</a>
+
+            <div class="nav-more">
+                <button type="button" class="nav-more-btn">더보기 ▾</button>
+
+                <div class="nav-more-menu">
+                    <a href="/tetris/">테트리스</a>
+                    <a href="/song/">노래책</a>
+                </div>
+            </div>
         </nav>
     </div>
 </header>
@@ -52,12 +58,19 @@
 
         <article class="home-card notice-card">
             <div class="home-card-head">
-                <div><span class="card-label">NOTICE</span><h2>공지</h2></div>
+                <div>
+                    <span class="card-label">NOTICE</span>
+                    <h2>공지</h2>
+                </div>
                 <a href="/post" class="card-arrow">→</a>
             </div>
-            <div class="notice-list">
-                <div class="notice-item"><span>NOTICE</span><b>공지</b></div>
 
+            <div class="notice-list">
+                <div id="main-notice" class="notice-item">
+                    <span>NOTICE</span>
+                    <b>불러오는 중...</b>
+                </div>
+            </div>
         </article>
     </section>
 </main>

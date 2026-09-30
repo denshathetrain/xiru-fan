@@ -829,3 +829,279 @@ main {
     font-size: 14px;
   }
 }
+
+/* =========================
+   노래책 (style.css 맨 아래에 붙여넣기)
+========================= */
+
+.song-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(8px);
+  padding: 16px;
+}
+
+.song-search {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 13px 20px;
+  font-family: inherit;
+  font-size: 16px;
+  color: var(--text);
+  background: rgba(255, 105, 160, 0.06);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.song-search::placeholder {
+  color: var(--muted);
+}
+
+.song-search:focus {
+  outline: none;
+  border-color: rgba(255, 143, 179, 0.55);
+  box-shadow: 0 0 18px rgba(255, 105, 160, 0.12);
+}
+
+.song-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.song-item {
+  border-radius: 14px;
+  transition: background 0.2s ease;
+}
+
+.song-item.open {
+  background: rgba(255, 105, 160, 0.07);
+}
+
+.song-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 9px 12px;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+.song-row:hover {
+  background: var(--pink-light);
+}
+
+.song-row:focus-visible {
+  outline: 2px solid var(--pink);
+  outline-offset: -2px;
+}
+
+.song-num {
+  width: 24px;
+  flex: none;
+  text-align: right;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.song-thumb {
+  width: 52px;
+  height: 52px;
+  flex: none;
+  overflow: hidden;
+  border-radius: 10px;
+  background: rgba(255, 143, 179, 0.12);
+  border: 1px solid rgba(255, 143, 179, 0.14);
+}
+
+.song-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.song-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.song-title {
+  display: block;
+  font-size: 17px;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.song-item.open .song-title {
+  color: #ff9abd;
+  text-shadow: 0 0 10px rgba(255, 120, 170, 0.35);
+}
+
+.song-artist {
+  display: block;
+  margin-top: 2px;
+  font-size: 14px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.song-tag {
+  flex: none;
+  font-size: 12px;
+  color: #ff9abd;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 2px 9px;
+}
+
+.song-chev {
+  flex: none;
+  color: var(--muted);
+  transition: transform 0.25s ease;
+}
+
+.song-item.open .song-chev {
+  transform: rotate(180deg);
+  color: #ff9abd;
+}
+
+/* 아래로 펼쳐지는 영역 */
+.song-detail {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition: grid-template-rows 0.25s ease, visibility 0s 0.25s;
+}
+
+.song-item.open .song-detail {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.song-detail-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.song-detail-body {
+  padding: 6px 18px 20px 18px;
+}
+
+.song-lyrics {
+  max-width: 640px;
+  max-height: 55vh;
+  overflow-y: auto;
+  margin: 0 0 18px;
+  white-space: pre-wrap;
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.95;
+  color: #e6d9e0;
+}
+
+.song-lyrics.empty {
+  color: var(--muted);
+}
+
+.song-yt {
+  display: inline-block;
+  padding: 9px 20px;
+  border-radius: 999px;
+  background: var(--pink);
+  color: #2a0f1a;
+  transition: 0.2s ease;
+}
+
+.song-yt:hover {
+  box-shadow: 0 0 20px rgba(255, 105, 160, 0.35);
+  transform: translateY(-1px);
+}
+
+.song-yt:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.song-empty {
+  padding: 50px 20px;
+  text-align: center;
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .song-detail,
+  .song-chev {
+    transition: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .song-card {
+    padding: 10px;
+    border-radius: 18px;
+  }
+
+  .song-num {
+    display: none;
+  }
+
+  .song-thumb {
+    width: 46px;
+    height: 46px;
+  }
+
+  .song-title {
+    font-size: 16px;
+  }
+
+  .song-detail-body {
+    padding: 4px 12px 18px;
+  }
+}
+
+.song-search::-webkit-search-cancel-button {
+  cursor: pointer;
+}
+
+.day.today {
+  outline: 2px solid var(--pink, #ff8fb3);
+  outline-offset: -2px;
+  border-radius: 8px;
+}
+
+.day.today .day-num {
+  color: #ff9abd;
+  font-weight: 700;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+}
+
+.footer a {
+  color: var(--muted);
+  transition: 0.2s ease;
+}
+
+.footer a:hover {
+  color: #ff9abd;
+  text-shadow: 0 0 10px rgba(255, 120, 170, 0.45);
+}

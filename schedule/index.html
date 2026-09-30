@@ -55,6 +55,7 @@
 </main>
 
 <footer class="footer">시루냥 팬사이트 · 준비중</footer>
+<script src="../script.js"></script>
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbyQFVjE0ZhUW4w59tiPUYssaFJ8R92iKpEYtYVZbp6bp61x7hrW13XGLh0ZOOED1v9s/exec";
 
@@ -158,6 +159,11 @@ function render(y, m) {
             if (holidays.includes(key)) {
                 cell.classList.add("holiday");
             }
+            const today = new Date();
+            const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+            if (key === todayKey) {
+                cell.classList.add("today");
+            }
 
             (data[key] || []).forEach(e => {
                 const contents = e[0].split("/");
@@ -181,7 +187,8 @@ function render(y, m) {
     }
 }
 
-let cur = new Date(2026, 7, 1);
+let cur = new Date();
+cur.setDate(1);
 
 prev.onclick = () => {
     cur.setMonth(cur.getMonth() - 1);

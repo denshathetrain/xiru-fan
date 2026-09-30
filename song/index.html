@@ -1,46 +1,49 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>노래책 | 시루냥 팬사이트</title>
-    <link rel="stylesheet" href="../style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>노래책 · 시루냥 팬사이트</title>
+<link rel="stylesheet" href="/style.css">
 </head>
 <body>
-<header class="site-header">
-    <div class="header-inner">
-        <a class="logo" href="../">시루냥 <span>팬사이트</span></a>
-        <nav class="nav">
-            <a href="../">메인</a>
-            <a href="../post/">게시판</a>
-            <a href="../schedule/">캘린더</a>
-            
-            <a href="../upbo/">업보목록</a>
-            <div class="nav-more">
-                <button type="button" class="nav-more-btn">더보기 ▾</button>
 
-                <div class="nav-more-menu">
-                    <a href="/tetris/">테트리스</a>
-                    <a href="/song/">노래책</a>
-                </div>
-            </div>
-        </nav>
-    </div>
+<!-- 헤더/푸터는 다른 페이지(예: upbo/index.html)와 똑같이 맞춰서 교체해도 됩니다 -->
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo" href="/">시루냥 <span>팬사이트</span></a>
+    <nav class="nav">
+      <a href="/">메인</a>
+      <a href="/post/">게시판</a>
+      <a href="/schedule/">캘린더</a>
+      <a href="/upbo/">업보목록</a>
+      <div class="nav-more">
+        <button class="nav-more-btn" type="button">더보기 ▾</button>
+        <div class="nav-more-menu">
+          <a href="/tetris/">테트리스</a>
+          <a href="/song/">노래책</a>
+        </div>
+      </div>
+    </nav>
+  </div>
 </header>
 
 <main>
-    <section class="page-title">
-        <h1>노래책</h1>
-        <p>TJ MR</p>
-    </section>
+  <div class="page-title">
+    <h1>노래책</h1>
+    <p id="song-count"></p>
+  </div>
 
-    <article class="card">
-        <h2>노래책</h2>
-        <p>리스트</p>
-    </article>
+  <div class="song-card">
+    <input id="song-search" class="song-search" type="search" placeholder="곡 제목, 가수, 가사로 검색" autocomplete="off" aria-label="노래 검색">
+    <ul id="song-list" class="song-list"></ul>
+    <p id="song-empty" class="song-empty" hidden>검색 결과가 없어요. 다른 단어로 찾아보세요.</p>
+  </div>
 </main>
 
 <footer class="footer">시루냥 팬사이트 · 준비중</footer>
-<script src="../script.js"></script>
+
+<script src="/script.js"></script>
+<script src="song.js"></script>
 </body>
 </html>

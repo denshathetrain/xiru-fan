@@ -14,9 +14,9 @@
     */
     const SONGS = [
       {
-        title: "예시 곡 1",
-        artist: "예시 가수 A",
-        yt: "https://youtu.be/AAAAAAAAAAA",
+        title: "그래도 나 사랑하지",
+        artist: "송하영",
+        yt: "https://youtu.be/TimDZZpB4hI?si=PhXREeuPOr4qj8Gc",
         lyrics: `보고 싶다 말해도 심드렁한 너
 서운하고 속상해 미워지다가도
 또 싱거운 네 한마디에

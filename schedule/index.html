@@ -11,14 +11,14 @@
             <a href="../">메인</a>
             <a href="../post/">게시판</a>
             <a href="../schedule/">캘린더</a>
+            <a href="/song/">노래책</a>
             
-            <a href="../upbo/">업보목록</a>
             <div class="nav-more">
                 <button type="button" class="nav-more-btn">더보기 ▾</button>
 
                 <div class="nav-more-menu">
                     <a href="/tetris/">테트리스</a>
-                    <a href="/song/">노래책</a>
+                    <a href="../upbo/">업보목록</a>
                 </div>
             </div>
         </nav>
@@ -53,151 +53,262 @@
         </div>
     </div>
 </main>
+<div class="event-modal-backdrop" id="event-modal" hidden>
+  <div class="event-modal">
+    <button type="button" class="event-modal-close" id="event-modal-close" aria-label="닫기">×</button>
+    <div class="event-modal-date" id="event-modal-date"></div>
+    <div class="event-modal-body" id="event-modal-body"></div>
+  </div>
+</div>
 
 <footer class="footer">시루냥 팬사이트 · 준비중</footer>
 <script src="../script.js"></script>
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbyQFVjE0ZhUW4w59tiPUYssaFJ8R92iKpEYtYVZbp6bp61x7hrW13XGLh0ZOOED1v9s/exec";
 
-let data = {};
+let rawByDate = {};
+let filledByDate = {};
+
+const eventModal = document.getElementById("event-modal");
+const eventModalBody = document.getElementById("event-modal-body");
+const eventModalDate = document.getElementById("event-modal-date");
+const eventModalClose = document.getElementById("event-modal-close");
+
+function formatDateLabel(key) {
+  const [, m, d] = key.split("-").map(Number);
+  return `${m}월 ${d}일`;
+}
+
+function openEventModal(text, dateLabel, color) {
+  eventModalBody.textContent = text;
+  eventModalBody.className = `event-modal-body ${color || ""}`;
+  eventModalDate.textContent = dateLabel;
+  eventModal.hidden = false;
+}
+
+function closeEventModal() {
+  eventModal.hidden = true;
+}
+
+eventModalClose.addEventListener("click", closeEventModal);
+eventModal.addEventListener("click", e => {
+  if (e.target === eventModal) closeEventModal();
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeEventModal();
+});
 
 async function loadSchedule() {
-    try {
-        const res = await fetch(
-            API_URL + "?t=" + Date.now()
-        );
+  try {
+    const res = await fetch(API_URL + "?t=" + Date.now());
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const schedules = await res.json();
+    console.log("받은 일정:", schedules);
 
-        if (!res.ok) {
-            throw new Error("HTTP " + res.status);
-        }
+    rawByDate = {};
+    schedules.forEach(item => {
+      const date = new Date(item.date);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const key = `${year}-${month}-${day}`;
 
-        const schedules = await res.json();
+      const content = (item.content || "").trim();
+      if (!content) return;
 
-        console.log("받은 일정:", schedules);
+      if (!rawByDate[key]) rawByDate[key] = { content: "", color: "" };
+      rawByDate[key].content = rawByDate[key].content
+        ? rawByDate[key].content + "/" + content
+        : content;
+      rawByDate[key].color = rawByDate[key].color
+        ? rawByDate[key].color + "/" + (item.color || "pink")
+        : (item.color || "pink");
+    });
 
-        data = {};
+    buildFilled();
+    render(cur.getFullYear(), cur.getMonth());
+  } catch (err) {
+    console.error("일정 데이터를 불러오지 못했습니다:", err);
+  }
+}
 
-        schedules.forEach(item => {
-            const date = new Date(item.date);
-
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, "0");
-            const day = String(date.getDate()).padStart(2, "0");
-
-            const key = `${year}-${month}-${day}`;
-
-            if (!data[key]) {
-                data[key] = [];
-            }
-
-            data[key].push([
-                item.content,
-                item.color
-            ]);
-        });
-
-        render(cur.getFullYear(), cur.getMonth());
-
-    } catch (err) {
-        console.error("일정 데이터를 불러오지 못했습니다:", err);
-    }
+function buildFilled() {
+  filledByDate = {};
+  const keys = Object.keys(rawByDate).sort();
+  let current = null;
+  keys.forEach(key => {
+    current = rawByDate[key];
+    filledByDate[key] = current;
+  });
 }
 
 function render(y, m) {
-    title.textContent = `${y}년 ${m + 1}월`;
-    body.innerHTML = "";
+  title.textContent = `${y}년 ${m + 1}월`;
+  body.innerHTML = "";
 
-    const first = new Date(y, m, 1).getDay();
-    const days = new Date(y, m + 1, 0).getDate();
+  const first = new Date(y, m, 1).getDay();
+  const days = new Date(y, m + 1, 0).getDate();
 
-    const holidays = [
-        "2026-06-03",
-        "2026-06-06",
-        "2026-07-17",
-        "2026-08-15",
-        "2026-08-17",
-        "2026-09-24",
-        "2026-09-25",
-        "2026-09-26",
-        "2026-10-03",
-        "2026-10-05",
-        "2026-10-09",
-        "2026-12-25",
-        "2027-01-01",
-    ];
+  const holidays = [
+    "2026-06-03", "2026-06-06", "2026-07-17", "2026-08-15", "2026-08-17",
+    "2026-09-24", "2026-09-25", "2026-09-26", "2026-10-03", "2026-10-05",
+    "2026-10-09", "2026-12-25", "2027-01-01",
+  ];
 
-    let d = 1;
+  const today = new Date();
+  const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
-    for (let r = 0; r < 6 && d <= days; r++) {
-        const w = document.createElement("div");
-        w.className = "week";
+  let d = 1;
+  for (let r = 0; r < 6 && d <= days; r++) {
+    const w = document.createElement("div");
+    w.className = "week";
 
-        for (let c = 0; c < 7; c++) {
-            const cell = document.createElement("div");
-            cell.className = "day";
+    const rowCells = [];
+    let refCell = null; // 날짜 숫자 위치를 재기 위한 기준 칸
 
-            const i = r * 7 + c;
+    for (let c = 0; c < 7; c++) {
+      const cell = document.createElement("div");
+      cell.className = "day";
+      const i = r * 7 + c;
 
-            if (i < first || d > days) {
-                w.appendChild(cell);
-                continue;
-            }
+      if (i < first || d > days) {
+        w.appendChild(cell);
+        rowCells.push(null);
+        continue;
+      }
 
-            if (c === 0) cell.classList.add("sunday");
-            if (c === 6) cell.classList.add("saturday");
+      if (c === 0) cell.classList.add("sunday");
+      if (c === 6) cell.classList.add("saturday");
 
-            const n = document.createElement("div");
-            n.className = "day-num";
-            n.textContent = d;
+      const n = document.createElement("div");
+      n.className = "day-num";
+      n.textContent = d;
+      cell.appendChild(n);
 
-            cell.appendChild(n);
+      if (!refCell) refCell = cell;
 
-            const month = String(m + 1).padStart(2, "0");
-            const day = String(d).padStart(2, "0");
-            const key = `${y}-${month}-${day}`;
+      const month = String(m + 1).padStart(2, "0");
+      const day = String(d).padStart(2, "0");
+      const key = `${y}-${month}-${day}`;
 
-            if (holidays.includes(key)) {
-                cell.classList.add("holiday");
-            }
-            const today = new Date();
-            const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-            if (key === todayKey) {
-                cell.classList.add("today");
-            }
+      if (holidays.includes(key)) cell.classList.add("holiday");
+      if (key === todayKey) cell.classList.add("today");
 
-            (data[key] || []).forEach(e => {
-                const contents = e[0].split("/");
-                const colors = e[1].split("/");
-                contents.forEach((content, index) => {
-                    const text = content.trim();
-                    if (!text) return;
-                    const color = (colors[index] || colors[0] || "pink").trim();
-                    const x = document.createElement("div");
-                    x.className = `event ${color}`;
-                    x.textContent = text;
-                    cell.appendChild(x);
-                });
+      const entry = filledByDate[key];
+      let single = null;
+
+      if (entry && entry.content) {
+        const contents = entry.content.split("/");
+        const colors = entry.color.split("/");
+
+        if (contents.length === 1) {
+          single = {
+            text: contents[0].trim(),
+            color: (colors[0] || "pink").trim(),
+            date: key
+          };
+        } else {
+          contents.forEach((content, index) => {
+            const text = content.trim();
+            if (!text) return;
+            const color = (colors[index] || colors[0] || "pink").trim();
+            const x = document.createElement("div");
+            x.className = `event ${color}`;
+            x.textContent = text;
+            x.addEventListener("click", () => {
+              openEventModal(text, formatDateLabel(key), color);
             });
-
-            w.appendChild(cell);
-            d++;
+            cell.appendChild(x);
+          });
         }
+      }
 
-        body.appendChild(w);
+      w.appendChild(cell);
+      rowCells.push(single);
+      d++;
     }
+
+    body.appendChild(w);
+    renderMergedBars(w, rowCells, refCell);
+  }
+}
+
+// 같은 내용이 연속되는 날짜를 하나의 바로 이어서 표시
+// (날짜 숫자 바로 아래 위치를 실제 화면에서 측정해서 배치 — CSS 설정 불필요)
+function renderMergedBars(weekEl, rowCells, refCell) {
+  weekEl.style.position = "relative";
+
+  const overlay = document.createElement("div");
+  overlay.style.position = "absolute";
+  overlay.style.left = "0";
+  overlay.style.right = "0";
+  overlay.style.display = "grid";
+  overlay.style.gridTemplateColumns = "repeat(7, minmax(0, 1fr))";
+  overlay.style.rowGap = "4px";
+  overlay.style.pointerEvents = "none";
+
+  if (refCell) {
+    const dayNum = refCell.querySelector(".day-num");
+    const cellRect = refCell.getBoundingClientRect();
+    const numRect = dayNum.getBoundingClientRect();
+    overlay.style.top = Math.round(numRect.bottom - cellRect.top + 4) + "px";
+  } else {
+    overlay.style.top = "0";
+  }
+
+  let i = 0;
+  while (i < 7) {
+    const info = rowCells[i];
+    if (!info) { i++; continue; }
+
+    let j = i;
+    while (
+      j + 1 < 7 &&
+      rowCells[j + 1] &&
+      rowCells[j + 1].text === info.text &&
+      rowCells[j + 1].color === info.color
+    ) {
+      j++;
+    }
+
+    const startDate = rowCells[i].date;
+    const endDate = rowCells[j].date;
+    const dateLabel = startDate === endDate
+      ? formatDateLabel(startDate)
+      : `${formatDateLabel(startDate)} ~ ${formatDateLabel(endDate)}`;
+
+    const bar = document.createElement("div");
+    bar.className = `event ${info.color}`;
+    bar.textContent = info.text;
+    bar.style.gridColumn = `${i + 1} / ${j + 2}`;
+    bar.style.margin = "0 2px";
+    bar.style.marginTop = "0";
+    bar.style.whiteSpace = "nowrap";
+    bar.style.overflow = "hidden";
+    bar.style.textOverflow = "ellipsis";
+    bar.style.pointerEvents = "auto";
+    bar.style.cursor = "pointer";
+    bar.addEventListener("click", () => {
+      openEventModal(info.text, dateLabel, info.color);
+    });
+
+    overlay.appendChild(bar);
+    i = j + 1;
+  }
+
+  if (overlay.children.length) weekEl.appendChild(overlay);
 }
 
 let cur = new Date();
 cur.setDate(1);
 
 prev.onclick = () => {
-    cur.setMonth(cur.getMonth() - 1);
-    render(cur.getFullYear(), cur.getMonth());
+  cur.setMonth(cur.getMonth() - 1);
+  render(cur.getFullYear(), cur.getMonth());
 };
-
 next.onclick = () => {
-    cur.setMonth(cur.getMonth() + 1);
-    render(cur.getFullYear(), cur.getMonth());
+  cur.setMonth(cur.getMonth() + 1);
+  render(cur.getFullYear(), cur.getMonth());
 };
 
 render(cur.getFullYear(), cur.getMonth());

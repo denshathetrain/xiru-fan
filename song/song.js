@@ -120,6 +120,15 @@
         img.onerror = () => img.remove();
         thumb.appendChild(img);
       }
+      const thumbHref = safeUrl(song.yt);
+      if (thumbHref) {
+        thumb.classList.add("link");
+        thumb.title = "유튜브에서 열기";
+        thumb.addEventListener("click", e => {
+          e.stopPropagation(); // 곡이 펼쳐지는 동작은 막기
+          window.open(thumbHref, "_blank", "noopener,noreferrer");
+        });
+      }
 
       const info = document.createElement("span");
       info.className = "song-info";
@@ -169,7 +178,7 @@
         link.target = "_blank";
         link.rel = "noopener noreferrer";
         link.textContent = "유튜브에서 듣기";
-        body.appendChild(link);
+        body.prepend(link);
       }
 
       inner.appendChild(body);

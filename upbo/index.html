@@ -37,6 +37,23 @@
 
     <article class="card upbo-card">
         <h2>업보 목록</h2>
+        <section class="uh-card" id="upbo-history" aria-labelledby="uh-title">
+            <div class="uh-head">
+                <h2 id="uh-title">획득 기록</h2>
+                <p class="uh-meta"><span class="uh-live" aria-hidden="true"></span><span id="uh-meta-text">불러오는 중...</span></p>
+            </div>
+
+            <div class="uh-headrow" aria-hidden="true">
+                <span>닉네임</span>
+                <span>상품</span>
+                <span>룰렛 세트</span>
+                <span>후원 시간</span>
+            </div>
+
+            <ul class="uh-list" id="uh-list">
+                <li class="uh-empty">불러오는 중...</li>
+            </ul>
+        </section>
 
         <div class="upbo-table-wrap">
             <table class="upbo-table">
@@ -73,6 +90,7 @@
 </main>
 
 <footer class="footer">시루냥 팬사이트 · 준비중</footer>
+<script src="../upbo/upbo-history.js"></script>
 <script src="../script.js"></script>
 </body>
 </html>

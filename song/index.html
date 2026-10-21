@@ -37,6 +37,11 @@
 
   <div class="song-card">
     <input id="song-search" class="song-search" type="search" placeholder="곡 제목, 가수, 가사로 검색" autocomplete="off" aria-label="노래 검색">
+    <div class="song-filters" id="song-filters">
+      <button type="button" class="song-filter active" data-genre="all" aria-pressed="true">전체</button>
+      <button type="button" class="song-filter" data-genre="kpop" aria-pressed="false">K-POP</button>
+      <button type="button" class="song-filter" data-genre="jpop" aria-pressed="false">J-POP</button> 
+    </div>
     <ul id="song-list" class="song-list"></ul>
     <p id="song-empty" class="song-empty" hidden>검색 결과가 없어요. 다른 단어로 찾아보세요.</p>
   </div>

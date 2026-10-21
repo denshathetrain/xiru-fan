@@ -16,6 +16,7 @@
       {
         title: "그래도 나 사랑하지",
         artist: "송하영",
+        genre: "kpop",
         yt: "https://youtu.be/TimDZZpB4hI?si=PhXREeuPOr4qj8Gc",
         lyrics: `보고 싶다 말해도 심드렁한 너
 서운하고 속상해 미워지다가도
@@ -159,16 +160,43 @@
       inner.className = "song-detail-inner";
       const body = document.createElement("div");
       body.className = "song-detail-body";
+      const hasJa = song.lyricsJa && song.lyricsJa.trim();
+      let lyrics;
 
-      const lyrics = document.createElement("pre");
-      lyrics.className = "song-lyrics";
-      if (song.lyrics && song.lyrics.trim()) {
-        lyrics.textContent = song.lyrics;
+      if (hasJa) {
+        // 한국어(왼쪽) + 일본어(오른쪽): 한 줄씩 짝을 맞춰서 표시
+        lyrics = document.createElement("div");
+        lyrics.className = "song-lyrics song-lyrics-dual";
+
+        const ko = (song.lyrics || "").split("\n");
+        const ja = song.lyricsJa.split("\n");
+        const rows = Math.max(ko.length, ja.length);
+
+        for (let k = 0; k < rows; k++) {
+          const left = document.createElement("div");
+          left.className = "song-lyrics-cell";
+          left.textContent = ko[k] || "";
+
+          const right = document.createElement("div");
+          right.className = "song-lyrics-cell ja";
+          right.lang = "ja";
+          right.textContent = ja[k] || "";
+
+          lyrics.append(left, right);
+        }
       } else {
-        lyrics.textContent = "아직 등록된 가사가 없어요.";
-        lyrics.classList.add("empty");
+        lyrics = document.createElement("pre");
+        lyrics.className = "song-lyrics";
+        if (song.lyrics && song.lyrics.trim()) {
+          lyrics.textContent = song.lyrics;
+        } else {
+          lyrics.textContent = "아직 등록된 가사가 없어요.";
+          lyrics.classList.add("empty");
+        }
       }
       body.appendChild(lyrics);
+
+
 
       const href = safeUrl(song.yt);
       if (href) {
@@ -198,20 +226,36 @@
 
       songItems.forEach((li, i) => {
         const s = SONGS[i];
+        const genreOk = activeGenre === "all" || s.genre === activeGenre;
         const inMeta = norm(s.title).includes(q) || norm(s.artist).includes(q);
         const inLyrics = norm(s.lyrics).includes(q);
-        const match = !q || inMeta || inLyrics;
+        const match = genreOk && (!q || inMeta || inLyrics);
 
         li.hidden = !match;
         li.querySelector(".song-tag").hidden = !(q && !inMeta && inLyrics);
         if (match) shown++;
       });
-
+      const filtering = q || activeGenre !== "all";
       songCount.textContent = q
         ? `${SONGS.length}곡 중 ${shown}곡`
         : `총 ${SONGS.length}곡 · 곡을 누르면 가사와 유튜브 링크가 나와요`;
       songEmpty.hidden = shown !== 0;
     }
+
+    let activeGenre = "all";
+    const songFilters = document.querySelectorAll(".song-filter");
+
+    songFilters.forEach(btn => {
+      btn.addEventListener("click", () => {
+        activeGenre = btn.dataset.genre;
+        songFilters.forEach(b => {
+          const on = b === btn;
+          b.classList.toggle("active", on);
+          b.setAttribute("aria-pressed", on);
+        });
+        filterSongs();
+      });
+    });
 
     songSearch.addEventListener("input", filterSongs);
     filterSongs();

@@ -148,6 +148,95 @@ if (boardList) {
     loadBoards();
 }
 
+const uhList = document.getElementById("uh-list");
+
+if (uhList) {
+    const uhMeta = document.getElementById("uh-meta-text");
+    const UH_ENDPOINT = "/api/upbo-history";
+    const UH_INTERVAL = 30 * 1000; // 30초마다 새로 확인
+    let uhLast = "";
+
+    function uhCell(className, text) {
+        const el = document.createElement("span");
+        el.className = className;
+        el.textContent = text; // 닉네임 등은 외부 데이터라 textContent로만 넣음
+        return el;
+    }
+
+    function uhMessage(text) {
+        uhList.replaceChildren();
+        const li = document.createElement("li");
+        li.className = "uh-empty";
+        li.textContent = text;
+        uhList.appendChild(li);
+    }
+
+    function uhRender(items) {
+        if (!items.length) {
+            uhMessage("아직 획득 기록이 없어요.");
+            return;
+        }
+
+        const frag = document.createDocumentFragment();
+
+        items.forEach(item => {
+            const li = document.createElement("li");
+            li.className = "uh-row";
+
+            const set = uhCell("uh-set", item.set || "—");
+            if (!item.set || item.set === "—") set.classList.add("none");
+
+            li.append(
+                uhCell("uh-nick", item.nickname || ""),
+                uhCell("uh-item", item.item || ""),
+                set,
+                uhCell("uh-time", item.time || "")
+            );
+
+            frag.appendChild(li);
+        });
+
+        uhList.replaceChildren(frag);
+    }
+
+    async function uhLoad() {
+        try {
+            const res = await fetch(UH_ENDPOINT);
+            if (!res.ok) throw new Error("HTTP " + res.status);
+
+            const data = await res.json();
+            const items = Array.isArray(data.items) ? data.items : [];
+
+            // 내용이 바뀐 경우에만 다시 그려서 깜빡임/스크롤 튐 방지
+            const signature = JSON.stringify(items);
+            if (signature !== uhLast) {
+                uhLast = signature;
+                uhRender(items);
+            }
+
+            uhMeta.textContent =
+                `총 ${items.length}건` +
+                (data.updatedAt ? ` · 마지막 반영 ${data.updatedAt}` : "");
+        } catch (error) {
+            console.error("획득 기록 불러오기 오류:", error);
+
+            // 이미 보여주던 목록이 있으면 그대로 두고, 처음부터 실패한 경우만 안내
+            if (!uhLast) uhMessage("획득 기록을 불러오지 못했어요.");
+            uhMeta.textContent = "불러오지 못했어요. 잠시 후 다시 시도할게요.";
+        }
+    }
+
+    uhLoad();
+
+    // 탭이 보이는 동안에만 주기적으로 확인
+    setInterval(() => {
+        if (!document.hidden) uhLoad();
+    }, UH_INTERVAL);
+
+    document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) uhLoad();
+    });
+}
 
 // ==============================
 // 네비게이션 현재 페이지 표시

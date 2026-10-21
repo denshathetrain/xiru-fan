@@ -1006,12 +1006,16 @@ main {
   max-width: 640px;
   max-height: 55vh;
   overflow-y: auto;
-  margin: 0 0 18px;
+  margin: 0;
   white-space: pre-wrap;
   font: inherit;
   font-size: 16px;
   line-height: 1.95;
   color: #e6d9e0;
+}
+
+.song-yt {
+  margin: 15px;
 }
 
 .song-lyrics.empty {
@@ -1187,3 +1191,257 @@ main {
 .event-modal-body.mint { border-left-color: #5cffd9; }
 .event-modal-body.orange { border-left-color: #ff9b5c; }
 .event-modal-body.purple { border-left-color: #9b5cff; }
+
+/* 노래책 장르 필터 */
+.song-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.song-filter {
+  padding: 7px 16px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--muted);
+  background: rgba(255, 105, 160, 0.06);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.song-filter:hover {
+  color: #ff9abd;
+  border-color: rgba(255, 143, 179, 0.45);
+}
+
+.song-filter:focus-visible {
+  outline: 2px solid var(--pink);
+  outline-offset: 2px;
+}
+
+.song-filter.active {
+  color: #2a0f1a;
+  background: var(--pink);
+  border-color: var(--pink);
+}
+
+/* 썸네일 클릭 시 유튜브로 이동 */
+.song-thumb.link {
+  position: relative;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.song-thumb.link:hover {
+  border-color: rgba(255, 143, 179, 0.6);
+  box-shadow: 0 0 14px rgba(255, 105, 160, 0.3);
+}
+
+.song-thumb.link::after {
+  content: "▶";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 5, 8, 0.55);
+  color: #fff;
+  font-size: 16px;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.song-thumb.link:hover::after {
+  opacity: 1;
+}
+
+/* jpop: 한국어 + 일본어 2단 가사 */
+.song-lyrics-dual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  white-space: normal;
+}
+
+.song-lyrics-cell {
+  min-height: 1.95em;
+  padding-right: 20px;
+  overflow-wrap: anywhere;
+}
+
+.song-lyrics-cell.ja {
+  padding-right: 0;
+  padding-left: 20px;
+  border-left: 1px solid rgba(255, 143, 179, 0.18);
+}
+
+@media (max-width: 700px) {
+  .song-lyrics-dual {
+    font-size: 14px;
+  }
+  .song-lyrics-cell {
+    padding-right: 10px;
+  }
+  .song-lyrics-cell.ja {
+    padding-left: 10px;
+  }
+}
+
+/* =========================
+   업보 획득 기록 (style.css 맨 아래에 붙여넣기)
+========================= */
+
+.uh-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(8px);
+  padding: 16px;
+}
+
+.uh-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 16px;
+  padding: 6px 12px 14px;
+}
+
+.uh-head h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.uh-meta {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.uh-live {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--pink);
+  animation: uh-pulse 2s ease-in-out infinite;
+}
+
+@keyframes uh-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.uh-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.uh-headrow,
+.uh-row {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr) 90px 190px;
+  gap: 12px;
+  align-items: center;
+  padding: 11px 12px;
+}
+
+.uh-headrow {
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: 1px;
+  border-bottom: 1px solid var(--border);
+}
+
+.uh-row {
+  border-radius: 12px;
+  transition: background 0.18s ease;
+}
+
+.uh-row:hover {
+  background: var(--pink-light);
+}
+
+.uh-nick {
+  color: #ff9abd;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.uh-item {
+  overflow-wrap: anywhere;
+}
+
+.uh-set,
+.uh-time {
+  color: var(--muted);
+}
+
+.uh-time {
+  font-size: 14px;
+}
+
+.uh-empty {
+  padding: 40px 12px;
+  text-align: center;
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .uh-live {
+    animation: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .uh-card {
+    padding: 10px;
+    border-radius: 18px;
+  }
+
+  .uh-headrow {
+    display: none;
+  }
+
+  /* 폰에서는 한 줄 = 카드 형태: 닉네임 + 시간 / 상품 / 룰렛 세트 */
+  .uh-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 2px 12px;
+    padding: 12px;
+  }
+
+  .uh-nick {
+    grid-column: 1;
+  }
+
+  .uh-time {
+    grid-column: 2;
+    grid-row: 1;
+    text-align: right;
+    font-size: 12px;
+  }
+
+  .uh-item {
+    grid-column: 1 / -1;
+  }
+
+  .uh-set {
+    grid-column: 1 / -1;
+    font-size: 13px;
+  }
+
+  .uh-set::before {
+    content: "룰렛 세트 · ";
+  }
+
+  .uh-set.none {
+    display: none;
+  }
+}

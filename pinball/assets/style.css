@@ -1,0 +1,610 @@
+/* =========================================================
+   시루냥 룰렛 스타일 (원작 style.scss 를 핑크 톤 일반 CSS로 다시 작성)
+   색은 아래 :root 변수만 바꾸면 전체 패널이 같이 바뀝니다.
+   (캔버스 안의 벽·구슬 색은 src/data/constants.ts 의 Themes 에 있어요)
+========================================================= */
+
+:root {
+  --canvas-bg: #0d0810;
+  --panel: rgba(18, 12, 20, 0.9);
+  --panel-solid: #1a1220;
+  --field: rgba(255, 255, 255, 0.07);
+  --field-hover: rgba(255, 143, 179, 0.16);
+  --text: #f4eaf0;
+  --muted: #b9a3b0;
+  --pink: #ff8fb3;
+  --pink-soft: rgba(255, 143, 179, 0.16);
+  --border: rgba(255, 143, 179, 0.3);
+  --on-pink: #2a0f1a;
+  --track: #4a3441;
+  --knob: #e8d7df;
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.5), 0 0 22px rgba(255, 105, 160, 0.12);
+  --copyright: rgba(244, 234, 240, 0.7);
+}
+
+:root.light {
+  --canvas-bg: #fff0f5;
+  --panel: rgba(255, 255, 255, 0.92);
+  --panel-solid: #ffffff;
+  --field: rgba(224, 69, 123, 0.08);
+  --field-hover: rgba(224, 69, 123, 0.16);
+  --text: #3a1f2c;
+  --muted: #8a6577;
+  --pink: #e0457b;
+  --pink-soft: rgba(224, 69, 123, 0.12);
+  --border: rgba(224, 69, 123, 0.32);
+  --on-pink: #ffffff;
+  --track: #d9b8c6;
+  --knob: #ffffff;
+  --shadow: 0 8px 30px rgba(120, 40, 80, 0.2);
+  --copyright: rgba(58, 31, 44, 0.7);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  background: var(--canvas-bg);
+  color: var(--text);
+  font-family: "Jua", sans-serif;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* 사이트로 돌아가는 링크 (필요 없으면 index.html 에서 이 줄을 지우면 됩니다) */
+.back-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 999;
+  padding: 7px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--pink);
+  font-size: 13px;
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow);
+  transition: background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.back-link:hover {
+  background: var(--pink-soft);
+  box-shadow: 0 0 18px rgba(255, 105, 160, 0.25);
+}
+
+.back-link:focus-visible {
+  outline: 2px solid var(--pink);
+  outline-offset: 2px;
+}
+
+div.copyright {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--copyright);
+  font-size: 12px;
+  z-index: 999;
+  width: 90%;
+  text-align: center;
+}
+
+div.copyright a {
+  color: var(--copyright);
+}
+
+/* 아이콘 (색은 글자색을 따라감) */
+.icon {
+  background: currentColor;
+  mask-repeat: no-repeat;
+  mask-position: center center;
+  mask-size: contain;
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  vertical-align: middle;
+}
+
+.icon.play { mask-image: url('images/play.svg'); }
+.icon.shuffle { mask-image: url('images/shuffle.svg'); }
+.icon.record { mask-image: url('images/record.svg'); }
+.icon.map { mask-image: url('images/map.svg'); }
+.icon.trophy { mask-image: url('images/trophy.svg'); }
+.icon.bomb { mask-image: url('images/bomb.svg'); }
+.icon.sun { mask-image: url('images/sun.svg'); }
+.icon.moon { mask-image: url('images/moon.svg'); }
+
+/* ---------- 설정 패널 ---------- */
+
+#settings {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  padding: 14px;
+  z-index: 999;
+  min-width: 50%;
+
+  display: flex;
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0s, opacity 1s linear;
+}
+
+#settings.hide {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* 버튼 등에 display 를 지정해도 hidden 속성이 먹도록 */
+#settings [hidden] {
+  display: none !important;
+}
+
+#settings h3 {
+  padding: 0;
+  margin: 0 0 6px;
+  font-size: 12pt;
+  font-weight: normal;
+  color: var(--pink);
+}
+
+#settings textarea {
+  width: 100%;
+  /* 오른쪽 칼럼이 패널 높이를 결정하면 '여러명'을 열 때 범위 행(35px)만큼 패널이 튄다.
+     왼쪽이 항상 더 크도록 미리 확보해 높이를 고정한다 */
+  min-height: calc(5rem + 35px);
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--field);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14pt;
+}
+
+#settings textarea::placeholder {
+  color: var(--muted);
+}
+
+#settings textarea:focus {
+  outline: none;
+  border-color: var(--pink);
+  box-shadow: 0 0 14px rgba(255, 105, 160, 0.22);
+}
+
+/* 버튼 */
+#settings button,
+#settings .btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--field);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 11pt;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, transform 0.1s ease;
+}
+
+#settings button:hover {
+  background: var(--field-hover);
+  border-color: var(--pink);
+}
+
+#settings button:active {
+  transform: scale(0.97);
+}
+
+#settings button:focus-visible {
+  outline: 2px solid var(--pink);
+  outline-offset: 2px;
+}
+
+/* 시작 버튼만 핑크로 채워서 눈에 띄게 */
+#settings #btnStart {
+  background: var(--pink);
+  border-color: var(--pink);
+  color: var(--on-pink);
+}
+
+#settings #btnStart:hover {
+  background: var(--pink);
+  filter: brightness(1.08);
+  box-shadow: 0 0 18px rgba(255, 105, 160, 0.45);
+}
+
+#settings .actions .icon {
+  width: 18px;
+  height: 18px;
+}
+
+#settings div.theme {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  color: var(--text);
+}
+
+/* 왼쪽: 이름 입력 + 버튼 */
+#settings div.left {
+  flex-grow: 1;
+  flex-shrink: 1;
+  order: 1;
+}
+
+#settings div.left .actions {
+  display: flex;
+  align-items: center;
+  justify-content: stretch;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+#settings div.left .actions div.sep {
+  flex-grow: 1;
+}
+
+#settings .btn-toggle-settings {
+  display: none;
+}
+
+/* 오른쪽: 설정 행들 */
+#settings div.right {
+  order: 2;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+#settings div.right div.row {
+  display: flex;
+  align-items: center;
+  height: 35px;
+}
+
+#settings div.right div.row label {
+  width: 150px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding-left: 1rem;
+  color: var(--text);
+}
+
+#settings div.right div.row .toggle-item {
+  width: 50%;
+  display: flex;
+  align-items: center;
+}
+
+/* 같은 자리(div.right div.row)에 두어야 display:flex 를 이긴다 */
+#settings div.right div.row.row-range {
+  display: none;
+}
+
+#settings div.right div.row.row-range label {
+  display: none;
+}
+
+#settings div.right div.row.row-range.active {
+  display: flex;
+  padding-left: 150px;
+}
+
+#settings div.right div.row.row-range .range-sep {
+  flex: 0 0 24px;
+  background: transparent;
+  color: var(--text);
+}
+
+/* 맵 선택 */
+#settings select {
+  height: 28px;
+  width: 100%;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--field);
+  color: var(--text);
+  font-family: inherit;
+}
+
+#settings select option,
+#settings select optgroup {
+  background: var(--panel-solid);
+  color: var(--text);
+}
+
+#settings .map-picker {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+#settings .map-picker select {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+#settings .btn-map-action {
+  flex: 0 0 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1;
+}
+
+/* 켜고 끄는 스위치 */
+#settings input[type=checkbox] {
+  width: 50px;
+  display: inline-block;
+  padding-right: 63px;
+  height: 25px;
+  position: relative;
+  vertical-align: middle;
+}
+
+#settings input[type=checkbox]:before {
+  position: absolute;
+  content: '';
+  display: inline-block;
+  width: 50px;
+  height: 25px;
+  border-radius: 25px;
+  background: var(--track);
+  top: 0;
+  left: 0;
+}
+
+#settings input[type=checkbox]:after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  content: '';
+  border-radius: 25px;
+  width: 25px;
+  height: 25px;
+  background: var(--knob);
+  transition: transform 0.2s;
+}
+
+#settings input[type=checkbox]:checked:after {
+  transform: translateX(100%);
+  background: #ffffff;
+}
+
+#settings input[type=checkbox]:checked:before {
+  content: '';
+  background: var(--pink);
+}
+
+/* 당첨 순위 버튼 묶음 */
+#settings .btn-group {
+  display: flex;
+  justify-content: stretch;
+  /* number input 의 기본 폭이 오른쪽 칼럼을 넓히지 않도록 width 를 0으로 누르고
+     그룹이 행의 남는 폭을 채우게 한다 */
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+#settings .btn-group > * {
+  box-sizing: border-box;
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  height: 28px;
+  border-radius: 0;
+  background: var(--field);
+  border: none;
+  padding: 0;
+  color: var(--text);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#settings .btn-group > *:first-child {
+  border-radius: 14px 0 0 14px;
+}
+
+#settings .btn-group > *:last-child {
+  border-radius: 0 14px 14px 0;
+}
+
+#settings .btn-group > *.active:before {
+  content: '';
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  vertical-align: middle;
+  mask-image: url('images/check.svg');
+  mask-repeat: no-repeat;
+  background: var(--pink);
+}
+
+#settings .btn-group > *.active {
+  background: var(--pink-soft);
+  color: var(--pink);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+#settings .btn-group input[type=number] {
+  box-sizing: border-box;
+  text-align: center;
+  width: 0;
+  font-family: inherit;
+}
+
+/* ---------- 알림 토스트 ---------- */
+
+div.toast {
+  position: fixed;
+  transform: translate(-50%, 0);
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: var(--pink);
+  color: var(--on-pink);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  bottom: 10px;
+  left: 50%;
+  z-index: 1000;
+  animation: .2s linear fade-in, .2s linear 1s reverse fade-in;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 100%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* ---------- 좁은 화면(폰) ---------- */
+
+@media screen and (max-width: 750px) {
+  #settings {
+    bottom: 60px;
+    display: block;
+    min-width: 0;
+    max-width: 100%;
+    width: calc(100% - 2rem);
+    overflow: hidden;
+    padding: 12px;
+    opacity: 1;
+    visibility: visible;
+    transition: visibility 0s, opacity 1s linear;
+  }
+
+  #settings.hide {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  #settings .btn-toggle-settings {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    margin-bottom: 6px;
+    cursor: pointer;
+    font-size: 11pt;
+  }
+
+  #settings .btn-toggle-settings .toggle-arrow {
+    font-style: normal;
+  }
+
+  #settings .collapsible-rows.collapsed {
+    display: none;
+  }
+
+  #settings textarea {
+    min-height: 2.5rem;
+    font-size: 11pt;
+  }
+
+  #settings div.right div.row {
+    height: auto;
+    display: block;
+    border-bottom: 1px solid var(--border);
+    padding: .5rem 0;
+  }
+
+  #settings div.right div.row label {
+    width: 100%;
+    margin-bottom: .5rem;
+    padding-left: 0;
+    display: block;
+  }
+
+  #settings div.right div.row.row-toggles {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  #settings div.right div.row.row-toggles .toggle-item {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+  }
+
+  #settings div.right div.row.row-toggles label {
+    order: 0;
+    margin-bottom: .3rem;
+  }
+
+  #settings div.right div.row.row-toggles input[type=checkbox] {
+    order: 1;
+  }
+
+  #settings div.right div.row.row-range.active {
+    display: flex;
+    padding-left: 0;
+  }
+
+  #settings div.right div.row.row-theme {
+    display: none;
+  }
+
+  #settings div.right div.row .icon {
+    width: 15px;
+    height: 15px;
+  }
+
+  .back-link {
+    top: 8px;
+    left: 8px;
+    padding: 5px 11px;
+    font-size: 12px;
+  }
+}

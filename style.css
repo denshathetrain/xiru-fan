@@ -1445,3 +1445,773 @@ main {
     display: none;
   }
 }
+
+/* =========================================================
+   시루냥 팬사이트용 룰렛 스타일
+   - 원작 style.scss 와 같은 선택자(JS/HTML이 쓰는 클래스·id)를 그대로 두고
+     색·글꼴·모양만 사이트 디자인(핑크, Jua)에 맞춰 다시 썼습니다.
+   - 색은 아래 :root 변수만 바꾸면 패널 전체가 같이 바뀝니다.
+   - 캔버스 안(구슬·벽·배경) 색은 src/data/constants.ts 의 Themes 에서 정합니다.
+   - 밝은 배경 테마(낙서)는 JS 가 <html> 에 .light 를 붙여 주므로 :root.light 에서 바꿉니다.
+========================================================= */
+
+:root {
+  --panel: rgba(16, 12, 18, 0.88);
+  --panel-solid: #1a1220;
+  --field: rgba(255, 255, 255, 0.07);
+  --field-hover: rgba(255, 143, 179, 0.16);
+  --text: #f4eaf0;
+  --muted: #b9a3b0;
+  --pink: #ff8fb3;
+  --pink-soft: rgba(255, 143, 179, 0.16);
+  --border: rgba(255, 143, 179, 0.28);
+  --on-pink: #2a0f1a;
+  --track: #4a3441;
+  --knob: #e8d7df;
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.5), 0 0 22px rgba(255, 105, 160, 0.12);
+  --overlay: rgba(7, 7, 10, 0.62);
+  --copyright-color: rgba(244, 234, 240, 0.75);
+}
+
+:root.light {
+  --panel: rgba(255, 255, 255, 0.92);
+  --panel-solid: #fffafc;
+  --field: rgba(224, 69, 123, 0.08);
+  --field-hover: rgba(224, 69, 123, 0.16);
+  --text: #3a1f2c;
+  --muted: #8a6577;
+  --pink: #e0457b;
+  --pink-soft: rgba(224, 69, 123, 0.12);
+  --border: rgba(224, 69, 123, 0.32);
+  --on-pink: #ffffff;
+  --track: #d9b8c6;
+  --knob: #ffffff;
+  --shadow: 0 8px 30px rgba(120, 40, 80, 0.2);
+  --overlay: rgba(58, 31, 44, 0.35);
+  --copyright-color: rgba(58, 31, 44, 0.7);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Jua", sans-serif;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* 사이트로 돌아가는 링크 (필요 없으면 index.html 에서 .back-link 줄을 지우세요) */
+.back-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 999;
+  padding: 7px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--pink);
+  font-size: 13px;
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow);
+  transition: background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.back-link:hover {
+  background: var(--pink-soft);
+  box-shadow: 0 0 18px rgba(255, 105, 160, 0.25);
+}
+
+.back-link:focus-visible {
+  outline: 2px solid var(--pink);
+  outline-offset: 2px;
+}
+
+div.copyright {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--copyright-color);
+  font-size: 12px;
+  z-index: 999;
+  width: 90%;
+  text-align: center;
+}
+
+div.copyright a {
+  color: var(--copyright-color);
+}
+
+/* 아이콘: 색은 글자색을 따라간다 */
+.icon {
+  background: currentColor;
+  mask-repeat: no-repeat;
+  mask-position: center center;
+  mask-size: contain;
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  vertical-align: middle;
+}
+
+.icon.play { mask-image: url('images/play.svg'); }
+.icon.shuffle { mask-image: url('images/shuffle.svg'); }
+.icon.record { mask-image: url('images/record.svg'); }
+.icon.map { mask-image: url('images/map.svg'); }
+.icon.trophy { mask-image: url('images/trophy.svg'); }
+.icon.bomb { mask-image: url('images/bomb.svg'); }
+.icon.sun { mask-image: url('images/sun.svg'); }
+.icon.moon { mask-image: url('images/moon.svg'); }
+
+/* ---------- 설정 패널 ---------- */
+
+#settings {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  padding: 14px;
+  z-index: 999;
+  min-width: 50%;
+
+  display: flex;
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0s, opacity 1s linear;
+}
+
+#settings.hide {
+  opacity: 0;
+  visibility: hidden;
+}
+
+#settings h3 {
+  padding: 0;
+  margin: 0 0 6px;
+  font-size: 12pt;
+  font-weight: normal;
+  color: var(--pink);
+}
+
+#settings textarea {
+  width: 100%;
+  /* 오른쪽 칼럼이 패널 높이를 결정하면 '여러명'을 열 때 범위 행(35px)만큼 패널이 튄다.
+     왼쪽이 항상 더 크도록 미리 확보해 높이를 고정한다 */
+  min-height: calc(5rem + 35px);
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--field);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14pt;
+}
+
+#settings textarea::placeholder {
+  color: var(--muted);
+}
+
+#settings textarea:focus {
+  outline: none;
+  border-color: var(--pink);
+  box-shadow: 0 0 14px rgba(255, 105, 160, 0.22);
+}
+
+/* 버튼 */
+#settings button,
+#settings .btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--field);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 11pt;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, transform 0.1s ease;
+}
+
+#settings button:hover {
+  background: var(--field-hover);
+  border-color: var(--pink);
+}
+
+#settings button:active {
+  transform: scale(0.97);
+}
+
+#settings button:focus-visible {
+  outline: 2px solid var(--pink);
+  outline-offset: 2px;
+}
+
+/* 시작 버튼만 핑크로 채워서 눈에 띄게 */
+#settings #btnStart {
+  background: var(--pink);
+  border-color: var(--pink);
+  color: var(--on-pink);
+}
+
+#settings #btnStart:hover {
+  background: var(--pink);
+  filter: brightness(1.08);
+  box-shadow: 0 0 18px rgba(255, 105, 160, 0.45);
+}
+
+#settings .actions .icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* 왼쪽: 이름 입력 + 버튼 */
+#settings div.left {
+  flex-grow: 1;
+  flex-shrink: 1;
+  order: 1;
+}
+
+#settings div.left .actions {
+  display: flex;
+  align-items: center;
+  justify-content: stretch;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+#settings div.left .actions div.sep {
+  flex-grow: 1;
+}
+
+/* 섞기·시작 옆의 능력표 버튼. 능력 모드일 때만 보인다 */
+#settings .actions .btn-abilities {
+  display: none;
+  color: var(--pink);
+  border-color: var(--pink);
+}
+
+#settings .actions .btn-abilities.visible {
+  display: inline-flex;
+  align-items: center;
+}
+
+#settings .btn-toggle-settings {
+  display: none;
+}
+
+/* 오른쪽: 설정 행들. 스킬 행의 버튼 세 개가 들어가게 칼럼 폭을 확보한다 */
+#settings div.right {
+  order: 2;
+  flex-grow: 0;
+  flex-shrink: 0;
+  min-width: 360px;
+}
+
+#settings div.right div.row {
+  display: flex;
+  align-items: center;
+  height: 35px;
+}
+
+#settings div.right div.row label {
+  width: 150px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding-left: 1rem;
+  color: var(--text);
+}
+
+#settings div.right div.row .toggle-item {
+  width: 50%;
+  display: flex;
+  align-items: center;
+}
+
+/* 같은 자리(div.right div.row)에 두어야 display:flex 를 이긴다 */
+#settings div.right div.row.row-range {
+  display: none;
+}
+
+#settings div.right div.row.row-range label {
+  display: none;
+}
+
+#settings div.right div.row.row-range.active {
+  display: flex;
+  padding-left: 150px;
+}
+
+/* div.right 는 콘텐츠 폭으로 잡힌다. number input 의 기본 폭이 남으면 이 행을 열 때마다
+   오른쪽 칼럼이 넓어지므로 width 를 0으로 눌러 위 행이 정한 폭만 채우게 한다 */
+#settings div.right div.row.row-range .range-group {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+#settings div.right div.row.row-range .range-group input[type=number] {
+  width: 0;
+}
+
+#settings div.right div.row.row-range .range-sep {
+  flex: 0 0 24px;
+  background: transparent;
+  color: var(--text);
+}
+
+/* 맵·테마 선택 */
+#settings select {
+  height: 28px;
+  width: 100%;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--field);
+  color: var(--text);
+  font-family: inherit;
+}
+
+#settings select:focus-visible {
+  outline: 2px solid var(--pink);
+  outline-offset: 1px;
+}
+
+#settings select option {
+  background: var(--panel-solid);
+  color: var(--text);
+}
+
+/* 켜고 끄는 스위치 */
+#settings input[type=checkbox] {
+  width: 50px;
+  display: inline-block;
+  padding-right: 63px;
+  height: 25px;
+  position: relative;
+  vertical-align: middle;
+}
+
+#settings input[type=checkbox]:before {
+  position: absolute;
+  content: '';
+  display: inline-block;
+  width: 50px;
+  height: 25px;
+  border-radius: 25px;
+  background: var(--track);
+  top: 0;
+  left: 0;
+}
+
+#settings input[type=checkbox]:after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  content: '';
+  border-radius: 25px;
+  width: 25px;
+  height: 25px;
+  background: var(--knob);
+  transition: transform 0.2s;
+}
+
+#settings input[type=checkbox]:checked:after {
+  transform: translateX(100%);
+  background: #ffffff;
+}
+
+#settings input[type=checkbox]:checked:before {
+  content: '';
+  background: var(--pink);
+}
+
+/* 스킬·당첨 순위처럼 버튼이 붙어 있는 묶음 */
+#settings .btn-group {
+  display: flex;
+  justify-content: stretch;
+  /* 스킬 행처럼 버튼만 있는 그룹도 당첨 순위 행과 같은 폭으로 늘어난다 */
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+#settings .btn-group > * {
+  box-sizing: border-box;
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  height: 28px;
+  border-radius: 0;
+  background: var(--field);
+  border: none;
+  padding: 0;
+  color: var(--text);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+#settings .btn-group > *:first-child {
+  border-radius: 14px 0 0 14px;
+}
+
+#settings .btn-group > *:last-child {
+  border-radius: 0 14px 14px 0;
+}
+
+#settings .btn-group > *.active:before {
+  content: '';
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  vertical-align: middle;
+  mask-image: url('images/check.svg');
+  mask-repeat: no-repeat;
+  background: var(--pink);
+}
+
+#settings .btn-group > *.active {
+  background: var(--pink-soft);
+  color: var(--pink);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+#settings .btn-group input[type=number] {
+  box-sizing: border-box;
+  text-align: center;
+  font-family: inherit;
+}
+
+/* ---------- 알림 토스트 ---------- */
+
+div.toast {
+  position: fixed;
+  transform: translate(-50%, 0);
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: var(--pink);
+  color: var(--on-pink);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  bottom: 10px;
+  left: 50%;
+  z-index: 1000;
+  animation: .2s linear fade-in, .2s linear 1s reverse fade-in;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 100%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* ---------- 구슬 능력표 창 ---------- */
+
+#abilities {
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: var(--overlay);
+  backdrop-filter: blur(3px);
+}
+
+#abilities.open {
+  display: flex;
+}
+
+#abilities .modal-panel {
+  background: var(--panel-solid);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  width: min(600px, 92vw);
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+#abilities h2 {
+  margin: 0;
+  padding: 14px 18px;
+  font-size: 14pt;
+  font-weight: normal;
+  color: var(--pink);
+  border-bottom: 1px solid var(--border);
+}
+
+#abilities .modal-body {
+  overflow: auto;
+  padding: 12px 18px;
+}
+
+#abilities ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#abilities .legend li {
+  display: grid;
+  grid-template-columns: 30px 88px 1fr;
+  gap: 6px;
+  align-items: center;
+  padding: 4px 0;
+  font-size: 10pt;
+  color: var(--muted);
+}
+
+#abilities .legend li b {
+  color: var(--text);
+  font-weight: normal;
+}
+
+#abilities .modal-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+#abilities .modal-tabs .tab {
+  flex: 1 1 0;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 7px 0;
+  background: var(--field);
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 11pt;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+#abilities .modal-tabs .tab:hover {
+  border-color: var(--pink);
+}
+
+#abilities .modal-tabs .tab.active {
+  background: var(--pink-soft);
+  color: var(--pink);
+  border-color: var(--pink);
+}
+
+#abilities .tab-page {
+  display: none;
+}
+
+#abilities .tab-page.active {
+  display: block;
+}
+
+/* 배당표: 색 점 | 이름 | 배지 | 스킬 이름 | 설명 */
+#abilities .assign-list li {
+  display: grid;
+  grid-template-columns: 16px minmax(70px, 1fr) 26px 90px 2fr;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 11pt;
+}
+
+#abilities .assign-list li .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+#abilities .assign-list li .nm {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#abilities .assign-list li .sk {
+  color: var(--pink);
+}
+
+#abilities .assign-list li .desc {
+  color: var(--muted);
+  font-size: 9.5pt;
+}
+
+#abilities .assign-list li .badge {
+  flex: 0 0 auto;
+}
+
+#abilities .modal-action {
+  padding: 10px 18px;
+  text-align: right;
+  border-top: 1px solid var(--border);
+}
+
+#abilities .modal-action button {
+  padding: 6px 18px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--field);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 11pt;
+  cursor: pointer;
+}
+
+#abilities .modal-action button:hover {
+  background: var(--field-hover);
+  border-color: var(--pink);
+}
+
+/* ---------- 좁은 화면(폰) ---------- */
+
+@media screen and (max-width: 750px) {
+  #settings {
+    bottom: 60px;
+    display: block;
+    min-width: 0;
+    max-width: 100%;
+    width: calc(100% - 2rem);
+    overflow: hidden;
+    padding: 12px;
+    opacity: 1;
+    visibility: visible;
+    transition: visibility 0s, opacity 1s linear;
+  }
+
+  #settings.hide {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  #settings div.right {
+    min-width: 0;
+  }
+
+  #settings .btn-toggle-settings {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    margin-bottom: 6px;
+    cursor: pointer;
+    font-size: 11pt;
+  }
+
+  #settings .btn-toggle-settings .toggle-arrow {
+    font-style: normal;
+  }
+
+  #settings .collapsible-rows.collapsed {
+    display: none;
+  }
+
+  #settings textarea {
+    min-height: 2.5rem;
+    font-size: 11pt;
+  }
+
+  #settings div.right div.row {
+    height: auto;
+    display: block;
+    border-bottom: 1px solid var(--border);
+    padding: .5rem 0;
+  }
+
+  #settings div.right div.row label {
+    width: 100%;
+    margin-bottom: .5rem;
+    padding-left: 0;
+    display: block;
+  }
+
+  #settings div.right div.row.row-toggles {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  #settings div.right div.row.row-toggles .toggle-item {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+  }
+
+  #settings div.right div.row.row-toggles label {
+    order: 0;
+    margin-bottom: .3rem;
+  }
+
+  #settings div.right div.row.row-toggles input[type=checkbox] {
+    order: 1;
+  }
+
+  #settings div.right div.row.row-range.active {
+    display: flex;
+    padding-left: 0;
+  }
+
+  #settings div.right div.row .icon {
+    width: 15px;
+    height: 15px;
+  }
+
+  .back-link {
+    top: 8px;
+    left: 8px;
+    padding: 5px 11px;
+    font-size: 12px;
+  }
+
+  /* 능력표는 좁은 화면에서 설명 칸을 줄바꿈해서 보여 준다 */
+  #abilities .assign-list li {
+    grid-template-columns: 14px minmax(50px, 1fr) 24px 76px;
+  }
+
+  #abilities .assign-list li .desc {
+    grid-column: 2 / -1;
+  }
+}
